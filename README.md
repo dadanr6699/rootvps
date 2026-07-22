@@ -1,6 +1,14 @@
 # rootvps
 
-Script bash sederhana untuk mengaktifkan akses root dan login password pada VPS.
+Script bash untuk mengaktifkan akses root SSH dan login password pada VPS.
+
+## Fitur
+
+- Cek harus dijalankan sebagai root
+- Backup otomatis `/etc/ssh/sshd_config` sebelum diubah
+- Menambah direktif SSH jika belum ada (bukan hanya mengganti)
+- Validasi `sshd -t` sebelum restart, restore backup jika config rusak (mencegah lockout)
+- Restart SSH lintas distro (`sshd` / `ssh` / `service`)
 
 ## Cara Penggunaan
 
@@ -16,4 +24,5 @@ Script bash sederhana untuk mengaktifkan akses root dan login password pada VPS.
    ```bash
    sudo ./setup_root.sh [password_pilihan]
    ```
-   *Catatan: Jika password dikosongkan, password bawaan adalah `RootPassword123!`*
+   *Catatan: Jika password dikosongkan, password bawaan adalah `123Dnstore`*
+
