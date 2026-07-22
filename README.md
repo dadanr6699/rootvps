@@ -31,8 +31,6 @@ curl -fsSL https://raw.githubusercontent.com/dadanr6699/rootvps/main/setup_root.
 
 > **PERINGATAN:** Perintah di bawah ini akan **MENGHAPUS OS saat ini beserta SELURUH data** di VPS. Proses ini **tidak bisa dibatalkan**. Pastikan sudah backup data penting.
 
-Instal ulang OS VPS menggunakan [bin456789/reinstall](https://github.com/bin456789/reinstall).
-
 Default `debian 12`, password `123Dnstore`:
 
 ```bash
