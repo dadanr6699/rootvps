@@ -12,8 +12,6 @@ Script bash untuk mengaktifkan akses root SSH dan login password pada VPS.
 
 ## Cara Penggunaan
 
-Cukup satu perintah (tidak perlu unduh atau `chmod`):
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/dadanr6699/rootvps/main/setup_root.sh | sudo bash
 ```
