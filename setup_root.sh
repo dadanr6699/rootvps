@@ -1,5 +1,135 @@
 #!/usr/bin/env bash
+export TERM="${TERM:-xterm}"
 # ==========================================================================
-# setup_root.sh - Enable Root SSH Access & Password Auth
+# setup_root.sh - Enable Root SSH Access & Password Authentication
+# Usage:
+#   curl -fsSL https://raw.githubusercontent.com/dadanr6699/rootvps/main/setup_root.sh | sudo bash
+#   curl -fsSL https://raw.githubusercontent.com/dadanr6699/rootvps/main/setup_root.sh | sudo bash -s -- passwordku
 # ==========================================================================
-eval "$(echo "IyEvdXNyL2Jpbi9lbnYgYmFzaApleHBvcnQgVEVSTT0iJHtURVJNOi14dGVybX0iCiMgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KIyBzZXR1cF9yb290LnNoIC0gRW5hYmxlIFJvb3QgU1NIIEFjY2VzcyAmIFBhc3N3b3JkIEF1dGhlbnRpY2F0aW9uCiMgVXNhZ2U6CiMgICBjdXJsIC1mc1NMIGh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9kYWRhbnI2Njk5L3Jvb3R2cHMvbWFpbi9zZXR1cF9yb290LnNoIHwgc3VkbyBiYXNoCiMgICBjdXJsIC1mc1NMIGh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9kYWRhbnI2Njk5L3Jvb3R2cHMvbWFpbi9zZXR1cF9yb290LnNoIHwgc3VkbyBiYXNoIC1zIC0tIHBhc3N3b3Jka3UKIyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKc2V0IC1ldW8gcGlwZWZhaWwKCiMgQU5TSSBTdHlsaW5nCkJPTEQ9IlwwMzNbMW0iCkRJTT0iXDAzM1sybSIKUkVTRVQ9IlwwMzNbMG0iCgpSRUQ9IlwwMzNbMTszMW0iCkdSRUVOPSJcMDMzWzE7MzJtIgpZRUxMT1c9IlwwMzNbMTszM20iCkJMVUU9IlwwMzNbMTszNG0iCk1BR0VOVEE9IlwwMzNbMTszNW0iCkNZQU49IlwwMzNbMTszNm0iCldISVRFPSJcMDMzWzE7MzdtIgoKIyBSb290IENoZWNrCmlmIFsgIiQoaWQgLXUpIiAtbmUgMCBdOyB0aGVuCiAgZWNobyAtZSAiJHtSRUR94pyWIEVycm9yOiBBbmRhIGhhcnVzIG1lbmphbGFua2FuIHNjcmlwdCBpbmkgc2ViYWdhaSByb290IChzdWRvKS4ke1JFU0VUfSIgPiYyCiAgZXhpdCAxCmZpCgppZiBbIC10IDEgXSAmJiBbIC1uICIke1RFUk06LX0iIF0gJiYgWyAiJFRFUk0iICE9ICJkdW1iIiBdOyB0aGVuCiAgY2xlYXIgMj4vZGV2L251bGwgfHwgdHJ1ZQpmaQoKZWNobyAtZSAiJHtDWUFOfSR7Qk9MRH0iCmNhdCA8PCAiRU9GIgogIF9fX18gIF9fXyAgIF9fXyBfX19fXyAgIF9fICAgX19fX19fICBfX19fICAKIHwgIF8gXC8gXyBcIC8gXyBcXyAgIF98ICBcIFwgLyAvICBfIFwvIF9fX3wgCiB8IHxfKSB8IHwgfCB8IHwgfCB8fCB8ICAgICBcIFYgL3wgfF8pIFxfX18gXCAKIHwgIF8gPHwgfF98IHwgfF98IHx8IHwgICAgICB8IHwgfCAgX18vIF9fXykgfAogfF98IFxfXF9fXy8gXF9fXy8gfF98ICAgICAgfF98IHxffCAgIHxfX19fLyAKRU9GCmVjaG8gLWUgIiR7TUFHRU5UQX0ke0JPTER9ICAgICAgICAg8J+agCBST09UIFNTSCBBQ0NFU1MgJiBQQVNTV09SRCBBVVRIIEVOQUJMRVIg8J+agCR7UkVTRVR9IgplY2hvIC1lICIke0NZQU59PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0ke1JFU0VUfVxuIgoKIyBQYXNzd29yZCBSZXNvbHV0aW9uClBBU1M9IiR7MTotMTIzRG5zdG9yZX0iCgplY2hvIC1lICIke0JMVUV9JHtCT0xEfVsxLzRdIPCflJEgTUVOR09ORklHVVJBU0kgUEFTU1dPUkQgUk9PVC4uLiR7UkVTRVR9IgplY2hvICJyb290OiRQQVNTIiB8IGNocGFzc3dkCiMgVW5sb2NrIHJvb3QgYWNjb3VudCBpZiBsb2NrZWQgYnkgY2xvdWQtaW5pdAp1c2VybW9kIC1VIHJvb3QgMj4vZGV2L251bGwgfHwgcGFzc3dkIC11IHJvb3QgMj4vZGV2L251bGwgfHwgdHJ1ZQplY2hvIC1lICIke0dSRUVOfeKclCBQYXNzd29yZCByb290IGJlcmhhc2lsIGRpYXR1ciBtZW5qYWRpOiAke0JPTER9JHtQQVNTfSR7UkVTRVR9XG4iCgojIEJhY2t1cCAmIFNTSCBDb25maWcgTW9kaWZpY2F0aW9uCmVjaG8gLWUgIiR7QkxVRX0ke0JPTER9WzIvNF0g4pqZ77iPIE1FTkdPTkZJR1VSQVNJIFNTSCBTRVJWRVIgKFNTSEQpLi4uJHtSRVNFVH0iClNTSERfQ09ORklHPSIvZXRjL3NzaC9zc2hkX2NvbmZpZyIKQkFDS1VQPSIke1NTSERfQ09ORklHfS5iYWsuJChkYXRlICslWSVtJWQlSCVNJVMpIgoKaWYgWyAtZiAiJFNTSERfQ09ORklHIiBdOyB0aGVuCiAgY3AgLWEgIiRTU0hEX0NPTkZJRyIgIiRCQUNLVVAiCiAgZWNobyAtZSAiJHtESU194pa6IEJhY2t1cCBzc2hkX2NvbmZpZyBkaXNpbXBhbiBkaTogJEJBQ0tVUCR7UkVTRVR9IgpmaQoKc2V0X2RpcmVjdGl2ZSgpIHsKICBsb2NhbCBrZXk9JDEgdmFsPSQyIGZpbGU9JDMKICBpZiBncmVwIC1FcSAiXlsjWzpzcGFjZTpdXSoke2tleX1cYiIgIiRmaWxlIjsgdGhlbgogICAgc2VkIC1pIC1FICJzfF5bI1s6c3BhY2U6XV0qJHtrZXl9XGIuKnwke2tleX0gJHt2YWx9fCIgIiRmaWxlIgogIGVsc2UKICAgIGVjaG8gIiR7a2V5fSAke3ZhbH0iID4+ICIkZmlsZSIKICBmaQp9CgojIEFwcGx5IHRvIG1haW4gc3NoZF9jb25maWcKaWYgWyAtZiAiJFNTSERfQ09ORklHIiBdOyB0aGVuCiAgc2V0X2RpcmVjdGl2ZSBQZXJtaXRSb290TG9naW4geWVzICIkU1NIRF9DT05GSUciCiAgc2V0X2RpcmVjdGl2ZSBQYXNzd29yZEF1dGhlbnRpY2F0aW9uIHllcyAiJFNTSERfQ09ORklHIgogIHNldF9kaXJlY3RpdmUgS2JkSW50ZXJhY3RpdmVBdXRoZW50aWNhdGlvbiB5ZXMgIiRTU0hEX0NPTkZJRyIKZmkKCiMgT3ZlcnJpZGUgQ2xvdWQtSW5pdCBEcm9wLWluIGNvbmZpZ3MgaWYgZGlyZWN0b3J5IGV4aXN0cyAoVWJ1bnR1IDIyLzI0LCBEZWJpYW4gMTIsIEFXUywgR0NQLCBETykKU1NIRF9ESVI9Ii9ldGMvc3NoL3NzaGRfY29uZmlnLmQiCmlmIFsgLWQgIiRTU0hEX0RJUiIgXTsgdGhlbgogIGVjaG8gLWUgIiR7RElNfeKWuiBNZW1wZXJiYXJ1aSBkcm9wLWluIGNvbmZpZyBkaSAkU1NIRF9ESVIuLi4ke1JFU0VUfSIKICAjIE5ldXRyYWxpemUgYW55IGNsb3VkLWluaXQgb3ZlcnJpZGUgZmlsZXMgdGhhdCBkaXNhYmxlIHBhc3N3b3JkIGF1dGgKICBmb3IgZHJvcGluIGluICIkU1NIRF9ESVIiLyouY29uZjsgZG8KICAgIGlmIFsgLWYgIiRkcm9waW4iIF07IHRoZW4KICAgICAgc2VkIC1pIC1FICJzfF5bI1s6c3BhY2U6XV0qUGFzc3dvcmRBdXRoZW50aWNhdGlvblxiLip8UGFzc3dvcmRBdXRoZW50aWNhdGlvbiB5ZXN8IiAiJGRyb3BpbiIgMj4vZGV2L251bGwgfHwgdHJ1ZQogICAgICBzZWQgLWkgLUUgInN8XlsjWzpzcGFjZTpdXSpQZXJtaXRSb290TG9naW5cYi4qfFBlcm1pdFJvb3RMb2dpbiB5ZXN8IiAiJGRyb3BpbiIgMj4vZGV2L251bGwgfHwgdHJ1ZQogICAgZmkKICBkb25lCgogICMgQ3JlYXRlIGhpZ2gtcHJpb3JpdHkgZHJvcC1pbiBvdmVycmlkZQogIGNhdCA8PCBFT0YgPiAiJFNTSERfRElSLzk5LXJvb3R2cHMtb3ZlcnJpZGUuY29uZiIKUGVybWl0Um9vdExvZ2luIHllcwpQYXNzd29yZEF1dGhlbnRpY2F0aW9uIHllcwpLYmRJbnRlcmFjdGl2ZUF1dGhlbnRpY2F0aW9uIHllcwpQdWJrZXlBdXRoZW50aWNhdGlvbiB5ZXMKRU9GCiAgY2htb2QgNjQ0ICIkU1NIRF9ESVIvOTktcm9vdHZwcy1vdmVycmlkZS5jb25mIgpmaQplY2hvIC1lICIke0dSRUVOfeKclCBQZW5nYXR1cmFuIFNTSCBQZXJtaXRSb290TG9naW4gJiBQYXNzd29yZEF1dGhlbnRpY2F0aW9uIGFrdGlmLiR7UkVTRVR9XG4iCgojIFNTSCBDb25maWd1cmF0aW9uIFZhbGlkYXRpb24KZWNobyAtZSAiJHtCTFVFfSR7Qk9MRH1bMy80XSDwn5uh77iPIFZBTElEQVNJIEtPTkZJR1VSQVNJIFNTSC4uLiR7UkVTRVR9IgppZiBjb21tYW5kIC12IHNzaGQgJj4vZGV2L251bGw7IHRoZW4KICBpZiAhIHNzaGQgLXQ7IHRoZW4KICAgIGVjaG8gLWUgIiR7UkVEfeKcliBFcnJvcjogS29uZmlndXJhc2kgc3NoZCB0aWRhayB2YWxpZC4gTWVuZ2VtYmFsaWthbiBiYWNrdXAuLi4ke1JFU0VUfSIgPiYyCiAgICBpZiBbIC1mICIkQkFDS1VQIiBdOyB0aGVuCiAgICAgIGNwIC1hICIkQkFDS1VQIiAiJFNTSERfQ09ORklHIgogICAgZmkKICAgIGV4aXQgMQogIGZpCmZpCmVjaG8gLWUgIiR7R1JFRU594pyUIFZhbGlkYXNpIHNpbnRha3Mgc3NoZCBzdWtzZXMuJHtSRVNFVH1cbiIKCiMgUmVzdGFydCBTU0ggU2VydmljZSBBY3Jvc3MgRGlzdHJvcwplY2hvIC1lICIke0JMVUV9JHtCT0xEfVs0LzRdIPCflIQgTUVSRVNUQVJUIExBWUFOQU4gU1NILi4uJHtSRVNFVH0iClJFU1RBUlRFRD0wCmlmIHN5c3RlbWN0bCBpcy1hY3RpdmUgLS1xdWlldCBzc2hkIDI+L2Rldi9udWxsIHx8IHN5c3RlbWN0bCBpcy1lbmFibGVkIC0tcXVpZXQgc3NoZCAyPi9kZXYvbnVsbDsgdGhlbgogIHN5c3RlbWN0bCByZXN0YXJ0IHNzaGQgJiYgUkVTVEFSVEVEPTEKZWxpZiBzeXN0ZW1jdGwgaXMtYWN0aXZlIC0tcXVpZXQgc3NoIDI+L2Rldi9udWxsIHx8IHN5c3RlbWN0bCBpcy1lbmFibGVkIC0tcXVpZXQgc3NoIDI+L2Rldi9udWxsOyB0aGVuCiAgc3lzdGVtY3RsIHJlc3RhcnQgc3NoICYmIFJFU1RBUlRFRD0xCmZpCgppZiBbICRSRVNUQVJURUQgLWVxIDAgXTsgdGhlbgogIHNlcnZpY2Ugc3NoZCByZXN0YXJ0IDI+L2Rldi9udWxsIHx8IHNlcnZpY2Ugc3NoIHJlc3RhcnQgMj4vZGV2L251bGwgfHwgL2V0Yy9pbml0LmQvc3NoIHJlc3RhcnQgMj4vZGV2L251bGwgfHwgdHJ1ZQpmaQplY2hvIC1lICIke0dSRUVOfeKclCBMYXlhbmFuIFNTSCBiZXJoYXNpbCBkaS1yZXN0YXJ0LiR7UkVTRVR9XG4iCgplY2hvIC1lICIke0NZQU59PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0ke1JFU0VUfSIKZWNobyAtZSAiJHtHUkVFTn0ke0JPTER94pyoIEFLU0VTIFJPT1QgU1NIIEJFUkhBU0lMIERJQUtUSUZLQU4g4pyoJHtSRVNFVH0iCmVjaG8gLWUgIiR7V0hJVEV94pa6IFVzZXJuYW1lIDogJHtCT0xEfXJvb3Qke1JFU0VUfSIKZWNobyAtZSAiJHtXSElURX3ilrogUGFzc3dvcmQgOiAke0dSRUVOfSR7Qk9MRH0ke1BBU1N9JHtSRVNFVH0iCmVjaG8gLWUgIiR7Q1lBTn09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSR7UkVTRVR9XG4iCg==" | base64 -d)"
+
+set -euo pipefail
+
+# ANSI Styling
+BOLD="\033[1m"
+DIM="\033[2m"
+RESET="\033[0m"
+
+RED="\033[1;31m"
+GREEN="\033[1;32m"
+YELLOW="\033[1;33m"
+BLUE="\033[1;34m"
+MAGENTA="\033[1;35m"
+CYAN="\033[1;36m"
+WHITE="\033[1;37m"
+
+# Root Check
+if [ "$(id -u)" -ne 0 ]; then
+  echo -e "${RED}✖ Error: Anda harus menjalankan script ini sebagai root (sudo).${RESET}" >&2
+  exit 1
+fi
+
+if [ -t 1 ] && [ -n "${TERM:-}" ] && [ "$TERM" != "dumb" ]; then
+  clear 2>/dev/null || true
+fi
+
+echo -e "${CYAN}${BOLD}"
+cat << "EOF"
+  ____  ___   ___ _____   __   ______  ____  
+ |  _ \/ _ \ / _ \_   _|  \ \ / /  _ \/ ___| 
+ | |_) | | | | | | || |     \ V /| |_) \___ \ 
+ |  _ <| |_| | |_| || |      | | |  __/ ___) |
+ |_| \_\___/ \___/ |_|      |_| |_|   |____/ 
+EOF
+echo -e "${MAGENTA}${BOLD}         🚀 ROOT SSH ACCESS & PASSWORD AUTH ENABLER 🚀${RESET}"
+echo -e "${CYAN}====================================================================${RESET}\n"
+
+# Password Resolution
+PASS="${1:-123Dnstore}"
+
+echo -e "${BLUE}${BOLD}[1/4] 🔑 MENGONFIGURASI PASSWORD ROOT...${RESET}"
+echo "root:$PASS" | chpasswd
+# Unlock root account if locked by cloud-init
+usermod -U root 2>/dev/null || passwd -u root 2>/dev/null || true
+echo -e "${GREEN}✔ Password root berhasil diatur menjadi: ${BOLD}${PASS}${RESET}\n"
+
+# Backup & SSH Config Modification
+echo -e "${BLUE}${BOLD}[2/4] ⚙️ MENGONFIGURASI SSH SERVER (SSHD)...${RESET}"
+SSHD_CONFIG="/etc/ssh/sshd_config"
+BACKUP="${SSHD_CONFIG}.bak.$(date +%Y%m%d%H%M%S)"
+
+if [ -f "$SSHD_CONFIG" ]; then
+  cp -a "$SSHD_CONFIG" "$BACKUP"
+  echo -e "${DIM}► Backup sshd_config disimpan di: $BACKUP${RESET}"
+fi
+
+set_directive() {
+  local key=$1 val=$2 file=$3
+  if grep -Eq "^[#[:space:]]*${key}\b" "$file"; then
+    sed -i -E "s|^[#[:space:]]*${key}\b.*|${key} ${val}|" "$file"
+  else
+    echo "${key} ${val}" >> "$file"
+  fi
+}
+
+# Apply to main sshd_config
+if [ -f "$SSHD_CONFIG" ]; then
+  set_directive PermitRootLogin yes "$SSHD_CONFIG"
+  set_directive PasswordAuthentication yes "$SSHD_CONFIG"
+  set_directive KbdInteractiveAuthentication yes "$SSHD_CONFIG"
+fi
+
+# Override Cloud-Init Drop-in configs if directory exists (Ubuntu 22/24, Debian 12, AWS, GCP, DO)
+SSHD_DIR="/etc/ssh/sshd_config.d"
+if [ -d "$SSHD_DIR" ]; then
+  echo -e "${DIM}► Memperbarui drop-in config di $SSHD_DIR...${RESET}"
+  # Neutralize any cloud-init override files that disable password auth
+  for dropin in "$SSHD_DIR"/*.conf; do
+    if [ -f "$dropin" ]; then
+      sed -i -E "s|^[#[:space:]]*PasswordAuthentication\b.*|PasswordAuthentication yes|" "$dropin" 2>/dev/null || true
+      sed -i -E "s|^[#[:space:]]*PermitRootLogin\b.*|PermitRootLogin yes|" "$dropin" 2>/dev/null || true
+    fi
+  done
+
+  # Create high-priority drop-in override
+  cat << EOF > "$SSHD_DIR/99-rootvps-override.conf"
+PermitRootLogin yes
+PasswordAuthentication yes
+KbdInteractiveAuthentication yes
+PubkeyAuthentication yes
+EOF
+  chmod 644 "$SSHD_DIR/99-rootvps-override.conf"
+fi
+echo -e "${GREEN}✔ Pengaturan SSH PermitRootLogin & PasswordAuthentication aktif.${RESET}\n"
+
+# SSH Configuration Validation
+echo -e "${BLUE}${BOLD}[3/4] 🛡️ VALIDASI KONFIGURASI SSH...${RESET}"
+if command -v sshd &>/dev/null; then
+  if ! sshd -t; then
+    echo -e "${RED}✖ Error: Konfigurasi sshd tidak valid. Mengembalikan backup...${RESET}" >&2
+    if [ -f "$BACKUP" ]; then
+      cp -a "$BACKUP" "$SSHD_CONFIG"
+    fi
+    exit 1
+  fi
+fi
+echo -e "${GREEN}✔ Validasi sintaks sshd sukses.${RESET}\n"
+
+# Restart SSH Service Across Distros
+echo -e "${BLUE}${BOLD}[4/4] 🔄 MERESTART LAYANAN SSH...${RESET}"
+RESTARTED=0
+if systemctl is-active --quiet sshd 2>/dev/null || systemctl is-enabled --quiet sshd 2>/dev/null; then
+  systemctl restart sshd && RESTARTED=1
+elif systemctl is-active --quiet ssh 2>/dev/null || systemctl is-enabled --quiet ssh 2>/dev/null; then
+  systemctl restart ssh && RESTARTED=1
+fi
+
+if [ $RESTARTED -eq 0 ]; then
+  service sshd restart 2>/dev/null || service ssh restart 2>/dev/null || /etc/init.d/ssh restart 2>/dev/null || true
+fi
+echo -e "${GREEN}✔ Layanan SSH berhasil di-restart.${RESET}\n"
+
+echo -e "${CYAN}====================================================================${RESET}"
+echo -e "${GREEN}${BOLD}✨ AKSES ROOT SSH BERHASIL DIAKTIFKAN ✨${RESET}"
+echo -e "${WHITE}► Username : ${BOLD}root${RESET}"
+echo -e "${WHITE}► Password : ${GREEN}${BOLD}${PASS}${RESET}"
+echo -e "${CYAN}====================================================================${RESET}\n"

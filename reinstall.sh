@@ -1,5 +1,110 @@
 #!/usr/bin/env bash
+export TERM="${TERM:-xterm}"
 # ==========================================================================
-# reinstall.sh - Reinstall / Rebuild VPS OS
+# reinstall.sh - Reinstall / Rebuild VPS Operating System
+# Usage:
+#   curl -fsSL https://raw.githubusercontent.com/dadanr6699/rootvps/main/reinstall.sh | sudo bash
+#   curl -fsSL https://raw.githubusercontent.com/dadanr6699/rootvps/main/reinstall.sh | sudo bash -s -- debian 12
+#   curl -fsSL https://raw.githubusercontent.com/dadanr6699/rootvps/main/reinstall.sh | sudo bash -s -- ubuntu 24.04 passwordku
 # ==========================================================================
-eval "$(echo "IyEvdXNyL2Jpbi9lbnYgYmFzaApleHBvcnQgVEVSTT0iJHtURVJNOi14dGVybX0iCiMgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KIyByZWluc3RhbGwuc2ggLSBSZWluc3RhbGwgLyBSZWJ1aWxkIFZQUyBPcGVyYXRpbmcgU3lzdGVtCiMgVXNhZ2U6CiMgICBjdXJsIC1mc1NMIGh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9kYWRhbnI2Njk5L3Jvb3R2cHMvbWFpbi9yZWluc3RhbGwuc2ggfCBzdWRvIGJhc2gKIyAgIGN1cmwgLWZzU0wgaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2RhZGFucjY2OTkvcm9vdHZwcy9tYWluL3JlaW5zdGFsbC5zaCB8IHN1ZG8gYmFzaCAtcyAtLSBkZWJpYW4gMTIKIyAgIGN1cmwgLWZzU0wgaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2RhZGFucjY2OTkvcm9vdHZwcy9tYWluL3JlaW5zdGFsbC5zaCB8IHN1ZG8gYmFzaCAtcyAtLSB1YnVudHUgMjQuMDQgcGFzc3dvcmRrdQojID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgpzZXQgLWV1byBwaXBlZmFpbAoKIyBBTlNJIFN0eWxpbmcKQk9MRD0iXDAzM1sxbSIKRElNPSJcMDMzWzJtIgpSRVNFVD0iXDAzM1swbSIKClJFRD0iXDAzM1sxOzMxbSIKR1JFRU49IlwwMzNbMTszMm0iCllFTExPVz0iXDAzM1sxOzMzbSIKQkxVRT0iXDAzM1sxOzM0bSIKTUFHRU5UQT0iXDAzM1sxOzM1bSIKQ1lBTj0iXDAzM1sxOzM2bSIKV0hJVEU9IlwwMzNbMTszN20iCgojIFJvb3QgQ2hlY2sKaWYgWyAiJChpZCAtdSkiIC1uZSAwIF07IHRoZW4KICBlY2hvIC1lICIke1JFRH3inJYgRXJyb3I6IEFuZGEgaGFydXMgbWVuamFsYW5rYW4gc2NyaXB0IGluaSBzZWJhZ2FpIHJvb3QgKHN1ZG8pLiR7UkVTRVR9IiA+JjIKICBleGl0IDEKZmkKCmlmIFsgLXQgMSBdICYmIFsgLW4gIiR7VEVSTTotfSIgXSAmJiBbICIkVEVSTSIgIT0gImR1bWIiIF07IHRoZW4KICBjbGVhciAyPi9kZXYvbnVsbCB8fCB0cnVlCmZpCgplY2hvIC1lICIke1JFRH0ke0JPTER9IgpjYXQgPDwgIkVPRiIKICAgICBfX19fICBfX19fXyBfX18gXyAgIF8gX19fXyBfX19fXyAgXyAgICBfICAgICBfICAgICAKICAgIHwgIF8gXHwgX19fX3xfIF98IFwgfCAvIF9fX3xfICAgX3wvIFwgIHwgfCAgIHwgfCAgICAKICAgIHwgfF8pIHwgIF98ICB8IHx8ICBcfCBcX19fIFwgfCB8IC8gXyBcIHwgfCAgIHwgfCAgICAKICAgIHwgIF8gPHwgfF9fXyB8IHx8IHxcICB8X19fKSB8fCB8LyBfX18gXHwgfF9fX3wgfF9fXyAKICAgIHxffCBcX1xfX19fX3xfX198X3wgXF98X19fXy8gfF8vXy8gICBcX1xfX19fX3xfX19fX3wKRU9GCmVjaG8gLWUgIiR7WUVMTE9XfSR7Qk9MRH3imqDvuI8gUEVSSU5HQVRBTjogSU5TVEFMIFVMQU5HIC8gUkVCVUlMRCBTSVNURU0gT1BFUkFTSSBWUFMg4pqg77iPJHtSRVNFVH0iCmVjaG8gLWUgIiR7UkVEfT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09JHtSRVNFVH1cbiIKCkRJU1RSTz0kezE6LWRlYmlhbn0KVkVSU0lPTj0kezI6LTEyfQpQQVNTPSR7MzotMTIzRG5zdG9yZX0KCmVjaG8gLWUgIiR7V0hJVEV94pa6IFRhcmdldCBPUyBEaXN0cm8gOiAke0dSRUVOfSR7Qk9MRH0ke0RJU1RST30gJHtWRVJTSU9OfSR7UkVTRVR9IgplY2hvIC1lICIke1dISVRFfeKWuiBQYXNzd29yZCBSb290ICAgIDogJHtHUkVFTn0ke0JPTER9JHtQQVNTfSR7UkVTRVR9IgplY2hvIC1lICIke1JFRH0ke0JPTER94pqg77iPIFBFUklOR0FUQU46IFNlbHVydWggZGF0YSAmIHNpc3RlbSBPUyBWUFMgYWthbiBESUhBUFVTIFRPVEFMISR7UkVTRVR9XG4iCgojIFN0ZXAgMTogRG93bmxvYWQgdXBzdHJlYW0gZW5naW5lIHNpbGVudGx5CmVjaG8gLWUgIiR7QkxVRX0ke0JPTER9WzEvMl0g8J+TpSBNRU5HVU5EVUggVVBTVFJFQU0gUkVJTlNUQUxMIEVOR0lORS4uLiR7UkVTRVR9IgpjZCAvcm9vdAppZiAhIGN1cmwgLWZzU0wgLW8gcmVpbnN0YWxsX3Vwc3RyZWFtLnNoIGh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9iaW40NTY3ODkvcmVpbnN0YWxsL21haW4vcmVpbnN0YWxsLnNoID4gL2Rldi9udWxsIDI+JjE7IHRoZW4KICB3Z2V0IC1xIC1PIHJlaW5zdGFsbF91cHN0cmVhbS5zaCBodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vYmluNDU2Nzg5L3JlaW5zdGFsbC9tYWluL3JlaW5zdGFsbC5zaCA+IC9kZXYvbnVsbCAyPiYxCmZpCmVjaG8gLWUgIiR7R1JFRU594pyUIEVuZ2luZSByZWluc3RhbGwgYmVyaGFzaWwgZGl1bmR1aC4ke1JFU0VUfVxuIgoKIyBTdGVwIDI6IFByZXBhcmUgT1MgUGFja2FnZXMgJiBLZXJuZWwgaW1hZ2Ugc2lsZW50bHkKZWNobyAtZSAiJHtCTFVFfSR7Qk9MRH1bMi8yXSDimpnvuI8gTUVOWUlBUEtBTiBQQUtFVCBJTlNUQUxBU0kgKCRESVNUUk8gJFZFUlNJT04pLi4uJHtSRVNFVH0iCmVjaG8gLWUgIiR7RElNfeKWuiBNZW1wcm9zZXMgaW1hZ2Uga2VybmVsICYgbWVuZ29uZmlndXJhc2kgYm9vdGluZyAoTW9ob24gdHVuZ2d1KS4uLiR7UkVTRVR9IgoKVVNFUl9BUkc9InJvb3QiCmlmIFsgIiQoZWNobyAiJERJU1RSTyIgfCB0ciAnWzp1cHBlcjpdJyAnWzpsb3dlcjpdJykiID0gIndpbmRvd3MiIF07IHRoZW4KICBVU0VSX0FSRz0iYWRtaW5pc3RyYXRvciIKZmkKCmlmICEgYmFzaCByZWluc3RhbGxfdXBzdHJlYW0uc2ggIiRESVNUUk8iICIkVkVSU0lPTiIgLS11c2VyICIkVVNFUl9BUkciIC0tcGFzc3dvcmQgIiRQQVNTIiA+IC90bXAvcmVpbnN0YWxsX3ByZXAubG9nIDI+JjE7IHRoZW4KICBlY2hvIC1lICIke1JFRH3inJYgR2FnYWwgbWVueWlhcGthbiBwYWtldCBpbnN0YWxhc2kgJERJU1RSTyAkVkVSU0lPTi4ke1JFU0VUfSIKICBlY2hvIC1lICIke1JFRH1EZXRhaWwgRXJyb3IgTG9nOiR7UkVTRVR9IgogIHRhaWwgLW4gMTUgL3RtcC9yZWluc3RhbGxfcHJlcC5sb2cKICBybSAtZiAvcm9vdC9yZWluc3RhbGxfdXBzdHJlYW0uc2ggMj4vZGV2L251bGwgfHwgdHJ1ZQogIGV4aXQgMQpmaQplY2hvIC1lICIke0dSRUVOfeKclCBQYWtldCAmIGtvbmZpZ3VyYXNpIGltYWdlIE9TICRESVNUUk8gJFZFUlNJT04gc2lhcC4ke1JFU0VUfVxuIgoKIyBJbnRlcmFjdGl2ZSBSZWJvb3QgQ29uZmlybWF0aW9uIFByb21wdAplY2hvIC1lICIke0NZQU59PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0ke1JFU0VUfSIKZWNobyAtZSAiJHtZRUxMT1d9JHtCT0xEfeKdkyBLT05GSVJNQVNJIFJFQk9PVCAmIEVLU0VLVVNJIEZJTkFMOiR7UkVTRVR9IgplY2hvIC1lICIke1dISVRFfUFwYWthaCBBbmRhIGluZ2luIG1lbGFrdWthbiByZWJvb3QgU0VLQVJBTkcgdW50dWsgbWVtdWxhaSBwcm9zZXMgaW5zdGFsIHVsYW5nIE9TPyR7UkVTRVR9IgplY2hvIC1lICIke0dSRUVOfSAgW3ldIFlhLCBSZWJvb3Qgc2VrYXJhbmcgJiBtdWxhaSBpbnN0YWwgdWxhbmcgT1MgKCR7RElTVFJPfSAke1ZFUlNJT059KSR7UkVTRVR9IgplY2hvIC1lICIke1JFRH0gIFtuXSBUaWRhaywgQmF0YWxrYW4gcmVib290ICYgYmF0YWxrYW4gaW5zdGFsIHVsYW5nJHtSRVNFVH0iCmVjaG8gLWUgIiR7Q1lBTn09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSR7UkVTRVR9IgoKRE9fUkVCT09UPSIiCmlmIFsgLXQgMCBdOyB0aGVuCiAgcmVhZCAtcCAiJChlY2hvIC1lICIke0NZQU598J+RiSBQaWxpaCBvcHNpICh5L04pOiAke1JFU0VUfSIpIiBET19SRUJPT1QgfHwgdHJ1ZQplbGlmIFsgLXQgMSBdOyB0aGVuCiAgcmVhZCAtcCAiJChlY2hvIC1lICIke0NZQU598J+RiSBQaWxpaCBvcHNpICh5L04pOiAke1JFU0VUfSIpIiBET19SRUJPT1QgPCAvZGV2L3R0eSAyPi9kZXYvbnVsbCB8fCB0cnVlCmZpCgppZiBbWyAiJERPX1JFQk9PVCIgPX4gXltZeV0kIF1dOyB0aGVuCiAgZWNobyAtZSAiXG4ke0NZQU59PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0ke1JFU0VUfSIKICBlY2hvIC1lICIke0dSRUVOfSR7Qk9MRH3inKggUkVCT09UIERJS09ORklSTUFTSSEgTUVNVUxBSSBJTlNUQUwgVUxBTkcgT1MgVlBTLi4uIOKcqCR7UkVTRVR9IgogIGVjaG8gLWUgIiR7V0hJVEV94pa6IFNpbGFrYW4gdHVuZ2d1IDMtNSBtZW5pdCBsYWx1IGh1YnVuZ2kgVlBTIHZpYSBTU0g6JHtSRVNFVH0iCiAgZWNobyAtZSAiJHtHUkVFTn3wn5GJIHNzaCByb290QDxJUC1WUFM+IChQYXNzd29yZDogJFBBU1MpJHtSRVNFVH0iCiAgZWNobyAtZSAiJHtDWUFOfT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09JHtSRVNFVH1cbiIKICByZWJvb3QKZWxzZQogIGVjaG8gLWUgIlxuJHtZRUxMT1d9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0ke1JFU0VUfSIKICBlY2hvIC1lICIke1JFRH0ke0JPTER94pyWIFJFQk9PVCAmIElOU1RBTCBVTEFORyBESUJBVEFMS0FOIE9MRUggUEVOR0dVTkEuJHtSRVNFVH0iCiAgZWNobyAtZSAiJHtXSElURX3ilrogVlBTIEFuZGEgVElEQUsgZGktcmVib290ICYgdGlkYWsgYWRhIHBlcnViYWhhbiBPUyB5YW5nIGRpdGVyYXBrYW4uJHtSRVNFVH0iCiAgZWNobyAtZSAiJHtZRUxMT1d9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0ke1JFU0VUfVxuIgogIHJtIC1mIC9yb290L3JlaW5zdGFsbF91cHN0cmVhbS5zaCAvdG1wL3JlaW5zdGFsbF9wcmVwLmxvZyAyPi9kZXYvbnVsbCB8fCB0cnVlCiAgZXhpdCAwCmZpCg==" | base64 -d)"
+
+set -euo pipefail
+
+# ANSI Styling
+BOLD="\033[1m"
+DIM="\033[2m"
+RESET="\033[0m"
+
+RED="\033[1;31m"
+GREEN="\033[1;32m"
+YELLOW="\033[1;33m"
+BLUE="\033[1;34m"
+MAGENTA="\033[1;35m"
+CYAN="\033[1;36m"
+WHITE="\033[1;37m"
+
+# Root Check
+if [ "$(id -u)" -ne 0 ]; then
+  echo -e "${RED}✖ Error: Anda harus menjalankan script ini sebagai root (sudo).${RESET}" >&2
+  exit 1
+fi
+
+if [ -t 1 ] && [ -n "${TERM:-}" ] && [ "$TERM" != "dumb" ]; then
+  clear 2>/dev/null || true
+fi
+
+echo -e "${RED}${BOLD}"
+cat << "EOF"
+     ____  _____ ___ _   _ ____ _____  _    _     _     
+    |  _ \| ____|_ _| \ | / ___|_   _|/ \  | |   | |    
+    | |_) |  _|  | ||  \| \___ \ | | / _ \ | |   | |    
+    |  _ <| |___ | || |\  |___) || |/ ___ \| |___| |___ 
+    |_| \_\_____|___|_| \_|____/ |_/_/   \_\_____|_____|
+EOF
+echo -e "${YELLOW}${BOLD}⚠️ PERINGATAN: INSTAL ULANG / REBUILD SISTEM OPERASI VPS ⚠️${RESET}"
+echo -e "${RED}====================================================================${RESET}\n"
+
+DISTRO=${1:-debian}
+VERSION=${2:-12}
+PASS=${3:-123Dnstore}
+
+echo -e "${WHITE}► Target OS Distro : ${GREEN}${BOLD}${DISTRO} ${VERSION}${RESET}"
+echo -e "${WHITE}► Password Root    : ${GREEN}${BOLD}${PASS}${RESET}"
+echo -e "${RED}${BOLD}⚠️ PERINGATAN: Seluruh data & sistem OS VPS akan DIHAPUS TOTAL!${RESET}\n"
+
+# Step 1: Download upstream engine silently
+echo -e "${BLUE}${BOLD}[1/2] 📥 MENGUNDUH UPSTREAM REINSTALL ENGINE...${RESET}"
+cd /root
+if ! curl -fsSL -o reinstall_upstream.sh https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh > /dev/null 2>&1; then
+  wget -q -O reinstall_upstream.sh https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh > /dev/null 2>&1
+fi
+echo -e "${GREEN}✔ Engine reinstall berhasil diunduh.${RESET}\n"
+
+# Step 2: Prepare OS Packages & Kernel image silently
+echo -e "${BLUE}${BOLD}[2/2] ⚙️ MENYIAPKAN PAKET INSTALASI ($DISTRO $VERSION)...${RESET}"
+echo -e "${DIM}► Memproses image kernel & mengonfigurasi booting (Mohon tunggu)...${RESET}"
+
+USER_ARG="root"
+if [ "$(echo "$DISTRO" | tr '[:upper:]' '[:lower:]')" = "windows" ]; then
+  USER_ARG="administrator"
+fi
+
+if ! bash reinstall_upstream.sh "$DISTRO" "$VERSION" --user "$USER_ARG" --password "$PASS" > /tmp/reinstall_prep.log 2>&1; then
+  echo -e "${RED}✖ Gagal menyiapkan paket instalasi $DISTRO $VERSION.${RESET}"
+  echo -e "${RED}Detail Error Log:${RESET}"
+  tail -n 15 /tmp/reinstall_prep.log
+  rm -f /root/reinstall_upstream.sh 2>/dev/null || true
+  exit 1
+fi
+echo -e "${GREEN}✔ Paket & konfigurasi image OS $DISTRO $VERSION siap.${RESET}\n"
+
+# Interactive Reboot Confirmation Prompt
+echo -e "${CYAN}====================================================================${RESET}"
+echo -e "${YELLOW}${BOLD}❓ KONFIRMASI REBOOT & EKSEKUSI FINAL:${RESET}"
+echo -e "${WHITE}Apakah Anda ingin melakukan reboot SEKARANG untuk memulai proses instal ulang OS?${RESET}"
+echo -e "${GREEN}  [y] Ya, Reboot sekarang & mulai instal ulang OS (${DISTRO} ${VERSION})${RESET}"
+echo -e "${RED}  [n] Tidak, Batalkan reboot & batalkan instal ulang${RESET}"
+echo -e "${CYAN}====================================================================${RESET}"
+
+DO_REBOOT=""
+if [ -t 0 ]; then
+  read -p "$(echo -e "${CYAN}👉 Pilih opsi (y/N): ${RESET}")" DO_REBOOT || true
+elif [ -t 1 ]; then
+  read -p "$(echo -e "${CYAN}👉 Pilih opsi (y/N): ${RESET}")" DO_REBOOT < /dev/tty 2>/dev/null || true
+fi
+
+if [[ "$DO_REBOOT" =~ ^[Yy]$ ]]; then
+  echo -e "\n${CYAN}====================================================================${RESET}"
+  echo -e "${GREEN}${BOLD}✨ REBOOT DIKONFIRMASI! MEMULAI INSTAL ULANG OS VPS... ✨${RESET}"
+  echo -e "${WHITE}► Silakan tunggu 3-5 menit lalu hubungi VPS via SSH:${RESET}"
+  echo -e "${GREEN}👉 ssh root@<IP-VPS> (Password: $PASS)${RESET}"
+  echo -e "${CYAN}====================================================================${RESET}\n"
+  reboot
+else
+  echo -e "\n${YELLOW}====================================================================${RESET}"
+  echo -e "${RED}${BOLD}✖ REBOOT & INSTAL ULANG DIBATALKAN OLEH PENGGUNA.${RESET}"
+  echo -e "${WHITE}► VPS Anda TIDAK di-reboot & tidak ada perubahan OS yang diterapkan.${RESET}"
+  echo -e "${YELLOW}====================================================================${RESET}\n"
+  rm -f /root/reinstall_upstream.sh /tmp/reinstall_prep.log 2>/dev/null || true
+  exit 0
+fi
