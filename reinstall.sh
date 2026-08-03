@@ -88,10 +88,13 @@ echo -e "${RED}  [n] Tidak, Batalkan reboot & batalkan instal ulang${RESET}"
 echo -e "${CYAN}====================================================================${RESET}"
 
 DO_REBOOT=""
-if [ -c /dev/tty ]; then
-  read -p "$(echo -e "${CYAN}👉 Pilih opsi (y/N): ${RESET}")" DO_REBOOT < /dev/tty || true
-else
+if [ -t 0 ]; then
   read -p "$(echo -e "${CYAN}👉 Pilih opsi (y/N): ${RESET}")" DO_REBOOT || true
+else
+  if exec 3< /dev/tty 2>/dev/null; then
+    read -p "$(echo -e "${CYAN}👉 Pilih opsi (y/N): ${RESET}")" DO_REBOOT <&3 2>/dev/null || true
+    exec 3<&-
+  fi
 fi
 
 if [[ "$DO_REBOOT" =~ ^[Yy]$ ]]; then
