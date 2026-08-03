@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+export TERM="${TERM:-xterm}"
 # ==========================================================================
 # reinstall.sh - Reinstall / Rebuild VPS Operating System
 # Usage:
@@ -8,7 +9,6 @@
 # ==========================================================================
 
 set -euo pipefail
-export TERM=${TERM:-xterm}
 
 # ANSI Styling
 BOLD="\033[1m"

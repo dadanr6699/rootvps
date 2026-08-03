@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+export TERM="${TERM:-xterm}"
 # ==========================================================================
 # setup_root.sh - Enable Root SSH Access & Password Authentication
 # Usage:
@@ -7,7 +8,6 @@
 # ==========================================================================
 
 set -euo pipefail
-export TERM=${TERM:-xterm}
 
 # ANSI Styling
 BOLD="\033[1m"
