@@ -49,15 +49,6 @@ echo -e "${WHITE}► Target OS Distro : ${GREEN}${BOLD}${DISTRO} ${VERSION}${RES
 echo -e "${WHITE}► Password Root    : ${GREEN}${BOLD}${PASS}${RESET}"
 echo -e "${RED}${BOLD}⚠️ PERINGATAN: Seluruh data & sistem OS VPS akan DIHAPUS TOTAL!${RESET}\n"
 
-# Interactive safety confirmation if running interactively in terminal
-if [ -t 0 ] && [ $# -lt 1 ]; then
-  read -p "$(echo -e "${YELLOW}❓ Apakah Anda YAKIN ingin menghapus OS & menginstal ulang? (ketik YES): ${RESET}")" CONFIRM
-  if [ "$CONFIRM" != "YES" ] && [ "$CONFIRM" != "yes" ]; then
-    echo -e "${RED}✖ Proses instal ulang dibatalkan.${RESET}"
-    exit 0
-  fi
-fi
-
 echo -e "${BLUE}${BOLD}[1/2] 📥 MENGUNDUH UPSTREAM REINSTALL ENGINE...${RESET}"
 cd /root
 if ! curl -fsSL -o reinstall_upstream.sh https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh; then
@@ -65,14 +56,38 @@ if ! curl -fsSL -o reinstall_upstream.sh https://raw.githubusercontent.com/bin45
 fi
 echo -e "${GREEN}✔ Engine reinstall berhasil diunduh.${RESET}\n"
 
-echo -e "${BLUE}${BOLD}[2/2] 🚀 MEMULAI PROSES INSTAL ULANG & REBOOT...${RESET}"
-echo -e "${DIM}► Menjalankan instalasi $DISTRO $VERSION dengan password $PASS...${RESET}"
+echo -e "${BLUE}${BOLD}[2/2] ⚙️ MENYIAPKAN FILE INSTALASI UNTUK OS $DISTRO $VERSION...${RESET}"
+echo -e "${DIM}► Menyiapkan paket & image $DISTRO $VERSION dengan password $PASS...${RESET}"
 bash reinstall_upstream.sh "$DISTRO" "$VERSION" --password "$PASS"
+echo -e "${GREEN}✔ Konfigurasi gambar & paket instalasi siap.${RESET}\n"
 
-echo -e "\n${CYAN}====================================================================${RESET}"
-echo -e "${GREEN}${BOLD}✨ REINSTALL TERJADWAL! REBOOT MEMULAI INSTALASI... ✨${RESET}"
-echo -e "${WHITE}► Silakan tunggu 3-5 menit lalu hubungi VPS via SSH:${RESET}"
-echo -e "${GREEN}👉 ssh root@<IP-VPS> (Password: $PASS)${RESET}"
-echo -e "${CYAN}====================================================================${RESET}\n"
+# Interactive Reboot Confirmation Prompt
+echo -e "${CYAN}====================================================================${RESET}"
+echo -e "${YELLOW}${BOLD}❓ KONFIRMASI REBOOT & EKSEKUSI FINAL:${RESET}"
+echo -e "${WHITE}Apakah Anda ingin melakukan reboot SEKARANG untuk memulai proses instal ulang OS?${RESET}"
+echo -e "${GREEN}  [y] Ya, Reboot sekarang & mulai instal ulang OS (${DISTRO} ${VERSION})${RESET}"
+echo -e "${RED}  [n] Tidak, Batalkan reboot & batalkan instal ulang${RESET}"
+echo -e "${CYAN}====================================================================${RESET}"
 
-reboot
+DO_REBOOT=""
+if [ -c /dev/tty ]; then
+  read -p "$(echo -e "${CYAN}👉 Pilih opsi (y/N): ${RESET}")" DO_REBOOT < /dev/tty || true
+else
+  read -p "$(echo -e "${CYAN}👉 Pilih opsi (y/N): ${RESET}")" DO_REBOOT || true
+fi
+
+if [[ "$DO_REBOOT" =~ ^[Yy]$ ]]; then
+  echo -e "\n${CYAN}====================================================================${RESET}"
+  echo -e "${GREEN}${BOLD}✨ REBOOT DIKONFIRMASI! MEMULAI INSTAL ULANG OS VPS... ✨${RESET}"
+  echo -e "${WHITE}► Silakan tunggu 3-5 menit lalu hubungi VPS via SSH:${RESET}"
+  echo -e "${GREEN}👉 ssh root@<IP-VPS> (Password: $PASS)${RESET}"
+  echo -e "${CYAN}====================================================================${RESET}\n"
+  reboot
+else
+  echo -e "\n${YELLOW}====================================================================${RESET}"
+  echo -e "${RED}${BOLD}✖ REBOOT & INSTAL ULANG DIBATALKAN OLEH PENGGUNA.${RESET}"
+  echo -e "${WHITE}► VPS Anda TIDAK di-reboot & tidak ada perubahan OS yang diterapkan.${RESET}"
+  echo -e "${YELLOW}====================================================================${RESET}\n"
+  rm -f /root/reinstall_upstream.sh 2>/dev/null || true
+  exit 0
+fi
