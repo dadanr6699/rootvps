@@ -49,17 +49,26 @@ echo -e "${WHITE}► Target OS Distro : ${GREEN}${BOLD}${DISTRO} ${VERSION}${RES
 echo -e "${WHITE}► Password Root    : ${GREEN}${BOLD}${PASS}${RESET}"
 echo -e "${RED}${BOLD}⚠️ PERINGATAN: Seluruh data & sistem OS VPS akan DIHAPUS TOTAL!${RESET}\n"
 
+# Step 1: Download upstream engine silently
 echo -e "${BLUE}${BOLD}[1/2] 📥 MENGUNDUH UPSTREAM REINSTALL ENGINE...${RESET}"
 cd /root
-if ! curl -fsSL -o reinstall_upstream.sh https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh; then
-  wget -O reinstall_upstream.sh https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh
+if ! curl -fsSL -o reinstall_upstream.sh https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh > /dev/null 2>&1; then
+  wget -q -O reinstall_upstream.sh https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh > /dev/null 2>&1
 fi
 echo -e "${GREEN}✔ Engine reinstall berhasil diunduh.${RESET}\n"
 
-echo -e "${BLUE}${BOLD}[2/2] ⚙️ MENYIAPKAN FILE INSTALASI UNTUK OS $DISTRO $VERSION...${RESET}"
-echo -e "${DIM}► Menyiapkan paket & image $DISTRO $VERSION dengan password $PASS...${RESET}"
-bash reinstall_upstream.sh "$DISTRO" "$VERSION" --password "$PASS"
-echo -e "${GREEN}✔ Konfigurasi gambar & paket instalasi siap.${RESET}\n"
+# Step 2: Prepare OS Packages & Kernel image silently
+echo -e "${BLUE}${BOLD}[2/2] ⚙️ MENYIAPKAN PAKET INSTALASI ($DISTRO $VERSION)...${RESET}"
+echo -e "${DIM}► Memproses image kernel & mengonfigurasi booting (Mohon tunggu)...${RESET}"
+
+if ! bash reinstall_upstream.sh "$DISTRO" "$VERSION" --password "$PASS" > /tmp/reinstall_prep.log 2>&1; then
+  echo -e "${RED}✖ Gagal menyiapkan paket instalasi $DISTRO $VERSION.${RESET}"
+  echo -e "${RED}Detail Error Log:${RESET}"
+  tail -n 15 /tmp/reinstall_prep.log
+  rm -f /root/reinstall_upstream.sh 2>/dev/null || true
+  exit 1
+fi
+echo -e "${GREEN}✔ Paket & konfigurasi image OS $DISTRO $VERSION siap.${RESET}\n"
 
 # Interactive Reboot Confirmation Prompt
 echo -e "${CYAN}====================================================================${RESET}"
@@ -88,6 +97,6 @@ else
   echo -e "${RED}${BOLD}✖ REBOOT & INSTAL ULANG DIBATALKAN OLEH PENGGUNA.${RESET}"
   echo -e "${WHITE}► VPS Anda TIDAK di-reboot & tidak ada perubahan OS yang diterapkan.${RESET}"
   echo -e "${YELLOW}====================================================================${RESET}\n"
-  rm -f /root/reinstall_upstream.sh 2>/dev/null || true
+  rm -f /root/reinstall_upstream.sh /tmp/reinstall_prep.log 2>/dev/null || true
   exit 0
 fi
