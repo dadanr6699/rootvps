@@ -7,6 +7,7 @@
 # ==========================================================================
 
 set -euo pipefail
+export TERM=${TERM:-xterm}
 
 # ANSI Styling
 BOLD="\033[1m"
@@ -27,7 +28,7 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
-clear
+clear 2>/dev/null || true
 echo -e "${CYAN}${BOLD}"
 cat << "EOF"
   ██████╗  ██████╗  ██████╗ ████████╗██╗   ██╗██████╗ ███████╗
