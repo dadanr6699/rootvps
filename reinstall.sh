@@ -41,7 +41,7 @@ cat << "EOF"
  |  _ <| |___ | || |\  |___) || |/ ___ \| |___| |___ 
  |_| \_\_____|___|_| \_|____/ |_/_/   \_\_____|_____|
 EOF
-echo -e "${YELLOW}${BOLD}     ⚠️ PERINGATAN: INSTAL ULANG / REBUILD SISTEM OPERASI VPS ⚠️${RESET}"
+echo -e "${YELLOW}${BOLD}⚠️ PERINGATAN: INSTAL ULANG / REBUILD SISTEM OPERASI VPS ⚠️${RESET}"
 echo -e "${RED}====================================================================${RESET}\n"
 
 DISTRO=${1:-debian}
