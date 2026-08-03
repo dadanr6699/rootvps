@@ -90,11 +90,8 @@ echo -e "${CYAN}================================================================
 DO_REBOOT=""
 if [ -t 0 ]; then
   read -p "$(echo -e "${CYAN}👉 Pilih opsi (y/N): ${RESET}")" DO_REBOOT || true
-else
-  if exec 3< /dev/tty 2>/dev/null; then
-    read -p "$(echo -e "${CYAN}👉 Pilih opsi (y/N): ${RESET}")" DO_REBOOT <&3 2>/dev/null || true
-    exec 3<&-
-  fi
+elif [ -t 1 ]; then
+  read -p "$(echo -e "${CYAN}👉 Pilih opsi (y/N): ${RESET}")" DO_REBOOT < /dev/tty 2>/dev/null || true
 fi
 
 if [[ "$DO_REBOOT" =~ ^[Yy]$ ]]; then
