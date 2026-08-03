@@ -61,7 +61,12 @@ echo -e "${GREEN}✔ Engine reinstall berhasil diunduh.${RESET}\n"
 echo -e "${BLUE}${BOLD}[2/2] ⚙️ MENYIAPKAN PAKET INSTALASI ($DISTRO $VERSION)...${RESET}"
 echo -e "${DIM}► Memproses image kernel & mengonfigurasi booting (Mohon tunggu)...${RESET}"
 
-if ! bash reinstall_upstream.sh "$DISTRO" "$VERSION" --password "$PASS" > /tmp/reinstall_prep.log 2>&1; then
+USER_ARG="root"
+if [ "$(echo "$DISTRO" | tr '[:upper:]' '[:lower:]')" = "windows" ]; then
+  USER_ARG="administrator"
+fi
+
+if ! bash reinstall_upstream.sh "$DISTRO" "$VERSION" --user "$USER_ARG" --password "$PASS" > /tmp/reinstall_prep.log 2>&1; then
   echo -e "${RED}✖ Gagal menyiapkan paket instalasi $DISTRO $VERSION.${RESET}"
   echo -e "${RED}Detail Error Log:${RESET}"
   tail -n 15 /tmp/reinstall_prep.log
